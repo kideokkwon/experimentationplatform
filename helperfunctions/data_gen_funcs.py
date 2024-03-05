@@ -55,3 +55,52 @@ def generate_main_dataframe(start_date, end_date, user_data,param=2):
         data.append(daily_df)
     data_df = pd.concat(data, ignore_index=True)
     return data_df
+
+
+def start_test(days, rl, param=2, num_users=100000):
+    """
+    Starts the A/B Test starting in 2024-01-01 for a set number of days
+
+    Input: 
+    - days: number of days
+    - rl: relative lift
+    - param: default param for control
+    - num_users: # of subs that may eventually enter the test
+    """
+    # start time is 2024-01-01
+    start_date = datetime(2024, 1, 1)
+    end_date = start_date + timedelta(days=days)
+
+    # generate users
+    user_data = create_user_dataset(num_users)
+
+    # generate events for control and test groups
+    df_c = generate_main_dataframe(start_date, end_date, user_data, param)
+    df_t = generate_main_dataframe(start_date, end_date, user_data, param * (1 + rl))
+
+    # Initialize lists to store daily snapshots
+    snapshot_c = []
+    snapshot_t = []
+
+    for day in range(1, days + 1):
+        # Slice the dataframes to get data up to the current day
+        df_c_slice = df_c[df_c['date'] <= start_date + timedelta(days=day)]
+        df_t_slice = df_t[df_t['date'] <= start_date + timedelta(days=day)]
+
+        # Aggregate by user for control and test groups
+        userdata_c = df_c_slice.groupby('userid')['action_count'].sum().reset_index()
+        userdata_t = df_t_slice.groupby('userid')['action_count'].sum().reset_index()
+
+        # Add snapshot column
+        userdata_c['snapshot'] = day
+        userdata_t['snapshot'] = day
+
+        # Append to snapshot lists
+        snapshot_c.append(userdata_c)
+        snapshot_t.append(userdata_t)
+
+    # Concatenate the snapshots to create final dataframes
+    userdata_c = pd.concat(snapshot_c, ignore_index=True)
+    userdata_t = pd.concat(snapshot_t, ignore_index=True)
+
+    return userdata_c, userdata_t
