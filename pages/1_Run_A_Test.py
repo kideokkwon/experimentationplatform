@@ -236,7 +236,7 @@ if flg_st == 'Sequential Test (mSPRT)':
 
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Mean Difference", round(e,2), "")
-    col2.metric("Days Run", day, day -daysrun)
+    col2.metric("Days Run", day, "")
     col3.metric("Lower CI Bound", round(ci_l,4), "")
     col4.metric('Upper CI Bound', round(ci_u,4), "")
 
