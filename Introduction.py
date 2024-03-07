@@ -41,6 +41,6 @@ st.markdown(
     1. **Run A Test** (page 2): Run your experiments here
     2. **Appendix: Data Generation** (page 2): explains the structure of the simulated data and the userpool
     3. **Appendix: Sequential Testing** (page 3): the rationale as well as an example implementation
-    4. **Work in Progress**:
+    4. **Appendix: Future Work** (page 4): What will be added in the near future
 """
 )
