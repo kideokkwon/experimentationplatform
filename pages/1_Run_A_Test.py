@@ -109,7 +109,7 @@ st.write('Notice how as the time period gets larger, the metric on average goes 
 
 # Group data by userid and calculate the sum of action_count for each user
 start_date = '2023-01-01'
-end_date = pd.to_datetime(start_date) + pd.Timedelta(days=option3*7)
+end_date = pd.to_datetime(start_date) + pd.Timedelta(days=int(option3*7))
 
 user_data_sum = data_df[(data_df['date'] >= start_date) & (data_df['date'] < end_date)].groupby('userid')[metric_option].sum()
 
@@ -219,7 +219,7 @@ trueeffectmod = param*(1+(trueeffect/100))
 
 ## Run Test for specified number of days
 start_date_new = datetime(2024, 1, 1)
-end_date_new = start_date_new + timedelta(days=daysrun)
+end_date_new = start_date_new + timedelta(days=int(daysrun))
 
 data_df_control = gen_funcs.generate_main_dataframe(start_date_new, end_date_new, users,param=param)
 data_df_treat = gen_funcs.generate_main_dataframe(start_date_new, end_date_new, users,param=trueeffectmod)
