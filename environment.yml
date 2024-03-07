@@ -6,4 +6,3 @@ dependencies:
   - matplotlib
   - numpy
   - scipy
-prefix: C:\Users\kideo\miniconda3\envs\expplatform
