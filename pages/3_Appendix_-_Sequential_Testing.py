@@ -4,6 +4,7 @@ import streamlit as st
 import uuid
 from datetime import datetime, timedelta
 import helperfunctions.data_gen_funcs as gen_funcs
+import helperfunctions.statistical_tests as st_funcs
 from scipy import stats
 import matplotlib.pyplot as plt
 
@@ -45,45 +46,58 @@ More on StatSig's implementation at ([Stewart, 2023](https://www.statsig.com/blo
 st.write("### A Demonstration")
 st.markdown(
     """
-Here is an example of an A/A Test - we track how the p-value fluctates over time
+Here is an example of an A/A Test - we track how the confidence interval fluctates over time
 """
 )
 
-## Run Test for specified number of days
-start_date_new = datetime(2024, 1, 1)
-end_date_new = start_date_new + timedelta(days=14)
+# run an A/A Test
+control, treat = gen_funcs.start_test(days=14, rl=0)
 
-# generate users
-param = 2
-num_users = 100000 # number of total registrants
-user_data = gen_funcs.create_user_dataset(num_users) # generates userid's for each user
+# for each day, collect criteria
+x = control['snapshot'].unique()
+y_fh_l = []; y_fh_h = []
+y_st_l = []; y_st_h = []
 
-data_df_control = gen_funcs.generate_main_dataframe(start_date_new, end_date_new, user_data,param=param)
-data_df_treat = gen_funcs.generate_main_dataframe(start_date_new, end_date_new, user_data,param=param)
 
-user_data_sums_control = data_df_control.groupby('userid')['action_count'].sum()
-user_data_sums_treat = data_df_treat.groupby('userid')['action_count'].sum()
+for i in range(1,np.max(x)+1):
+    temp_c = control[control['snapshot'] == i]['action_count']
+    temp_t = treat[treat['snapshot'] == i]['action_count'] 
+    st_l, st_h = st_funcs.msprt(0.05, temp_c, temp_t)
+    fh_l, fh_h = st_funcs.fixedttest(0.05, temp_c, temp_t)
+    y_fh_l.append(fh_l)
+    y_fh_h.append(fh_h)
+    y_st_l.append(st_l)
+    y_st_h.append(st_h)
 
-pvals = []
-for i in range(2,len(user_data_sums_control)+1):
-    t_stat, p_value = stats.ttest_ind(user_data_sums_treat[:i],user_data_sums_control[:i], equal_var=False)
-    pvals.append(p_value)
-int_list = list(range(2,len(user_data_sums_control)+1))
+chart_data = pd.DataFrame(np.array([y_fh_l, y_fh_h, y_st_l, y_st_h]).T, columns=['Lower (Regular)','Upper (Regular)','Lower (mSPRT)','Upper (mSPRT)'])
+st.line_chart(chart_data,color=['#FF0000','#0000FF','#FF0000','#0000FF'])
 
-fig, ax = plt.subplots()
-ax.plot(int_list,pvals); ax.set_ylabel('p-value'); ax.set_xlabel('samples')
-ax.set_title('example of p-value fluctuation as test runs')
-st.pyplot(fig)
-
+st.write("### The FPR and Power")
 st.markdown(
     """
-While the above result just shows an example of fluctation over time for one A/A test, examples of aggregate simulation results can be found at
-([Stewart, 2023](https://www.statsig.com/blog/sequential-testing-on-statsig)) for even further intuition.
+The "False Positive Rate" is the rate of "*falsely* thinking the test is *positive*". 
+We can check this rate by simulating a lot of A/A tests and seeing how often the two methods conclude that the test is positive
 
-The point is that an experiment, when design assumptions are met, caps the false positive rate at the alpha level, typically 5%.
-However, "peeking" will inflate this rate, but we still want a method for some scenarios where even when peeking, the FPR is controlled.
+On the other hand, the "power" can be easily checked by simulating A/B tests where there is a difference and seeing what percent of them
+are rejected.
 
+Feel free to check out my Simulation here: [Link](https://github.com/kideokkwon/experimentation-simulation-and-text-notes/blob/main/simulation/topic_03_sequential_testing.ipynb)
 
+For one with more detail and insights (but no replication code): ([Stewart, 2023](https://www.statsig.com/blog/sequential-testing-on-statsig))
+
+The results indicate that the Sequential helps protect from inflated FPR, but the tradeoff is that the Power is going to be a little lower
+than a standard fixed horizon test. This is why Sequential Testing is not the default - because when it is not necessary to perform a Sequential Test,
+it is more powerful to perform a regular fixed horizon test.
 """
 )
+
+
+
+
+
+
+
+
+
+
 

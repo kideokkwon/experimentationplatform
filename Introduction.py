@@ -42,8 +42,7 @@ st.markdown(
     2. **Run A Test** (page 2): Run your experiments here
     3. **Appendix: Data Generation** (page 2): explains the structure of the simulated data and the userpool
     4. **Appendix: Sequential Testing** (page 3): the rationale as well as an example implementation
-    5. **Appendix: CUPED**: (page 4): the rationale as well as an implementation
-    6. **Work in Progress**:
+    5. **Work in Progress**:
 
 
 """
@@ -68,7 +67,7 @@ The below is a quick example of running a typical A/B test.
 st.write('### Sample Events')
 st.markdown(
     """
-A sample of events, with `action_count` representing some arbitrary count metric.
+A sample of events, with `action_count` representing some arbitrary count metric. 
 """
 )
 param = 2
@@ -155,7 +154,7 @@ st.latex(r'''
 
 st.write('The delta, or minimum detectable effect (MDE), is the change you want to be able to detect.')
 mde = st.slider('MDE (%)', min_value=1, max_value=10,value=5)
-n = round((16*np.var(user_data_sum,ddof=1))/(np.mean(user_data_sum)*(mde/100)))
+n = round((16*np.var(user_data_sum,ddof=1))/(np.mean(user_data_sum)*(mde/100))**2)
 st.write('Given the above configurations, we need: ', n, ' users per variant')
 
 ##############################################################################################################

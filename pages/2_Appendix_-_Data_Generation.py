@@ -59,7 +59,6 @@ Each day, data is sampled from some statistical distribution and each row is ass
 start_date = datetime(2023, 1, 1)
 end_date = datetime(2023, 12, 31)
 data_df = gen_funcs.generate_main_dataframe(start_date, end_date, user_data,param=param) # creates random event data
-data_df = gen_funcs.generate_main_dataframe(start_date, end_date, user_data,param=param) # creates random event data
 st.write(data_df.head(5))
 
 st.markdown(
@@ -68,6 +67,10 @@ There are a few implications with this approach. The most notable one is that th
 population Average, as each day, users who came the previous day can come back. What this means is that, 
 based on how we are generating the data, as the difference between 
 the size of the registrant base and DAU increases, the value of the metric converges with the population mean. 
+
+Interestingly, the question of "How many days does it take for every user to get sampled at least once" given the data generation above
+is a solved combinatorics problem with well-known asymptotic properties. This was first solved in (Stadje, 1990) and is known as 
+a generalization of the Coupon Collector's problem, which you can read more about in ([Ferrante, 2012](https://arxiv.org/pdf/1209.2667.pdf))
 """
 )
 

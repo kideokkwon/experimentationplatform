@@ -17,7 +17,7 @@ def create_user_dataset(num_users):
     user_df = pd.DataFrame({'userid': user_ids})
     return user_df
 
-def generate_daily_data(date, user_data,param=2):
+def generate_daily_data(date, user_data,param=2, min_per_day=100):
     """
     Generate daily data DataFrame with random values and corresponding user IDs.
 
@@ -28,7 +28,7 @@ def generate_daily_data(date, user_data,param=2):
     Returns:
     - daily_data_df (DataFrame): DataFrame with 'userid', 'data', and 'date' columns.
     """
-    daily_data = np.random.poisson(param, size=np.random.randint(100, 200))
+    daily_data = np.random.poisson(param, size=np.random.randint(min_per_day, min_per_day*2))
     daily_df = pd.DataFrame({
         'userid': np.random.choice(user_data['userid'], size=len(daily_data)),
         'action_count': daily_data,
@@ -36,7 +36,7 @@ def generate_daily_data(date, user_data,param=2):
     })
     return daily_df
 
-def generate_main_dataframe(start_date, end_date, user_data,param=2):
+def generate_main_dataframe(start_date, end_date, user_data,param=2,min_per_day=100):
     """
     Generate main DataFrame with daily data for a date range.
 
@@ -51,7 +51,7 @@ def generate_main_dataframe(start_date, end_date, user_data,param=2):
     date_range = pd.date_range(start=start_date, end=end_date)
     data = []
     for date in date_range:
-        daily_df = generate_daily_data(date, user_data,param)
+        daily_df = generate_daily_data(date, user_data,param,min_per_day)
         data.append(daily_df)
     data_df = pd.concat(data, ignore_index=True)
     return data_df
