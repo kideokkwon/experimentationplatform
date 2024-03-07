@@ -3,14 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - matplotlib-base=3.8.0=py312hc7c4135_0
-  - matplotlib-inline=0.1.6=pyhd8ed1ab_0
-  - numpy=1.26.4=py312hfd52020_0
-  - numpy-base=1.26.4=py312h4dde369_0
-  - pandas=2.1.4=py312hc7c4135_0
-  - python=3.12.2=h1d929f7_0
-  - python-dateutil=2.8.2=pyhd3eb1b0_0
-  - python-tzdata=2023.3=pyhd3eb1b0_0
-  - scipy=1.11.3=py312h3d2928d_0
-  - seaborn=0.12.2=py312haa95532_0
+  - matplotlib
+  - numpy
+  - scipy
 prefix: C:\Users\kideo\miniconda3\envs\expplatform
