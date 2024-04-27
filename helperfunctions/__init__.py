@@ -1,3 +1,3 @@
 __all__ = [
-    "data_gen_funcs", "statistical_tests"
+    "data_gen_funcs", "statistical_tests", "users.py"
 ]

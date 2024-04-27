@@ -8,7 +8,7 @@ class User:
         self.gender = self.generate_gender()
         self.age = self.generate_age()
         self.registration_date = registration_date
-        self.usertype = self.generate_usertype
+        self.usertype = self.generate_usertype()
     
     @staticmethod 
     def generate_gender():
@@ -23,5 +23,4 @@ class User:
     @staticmethod
     def generate_usertype():
         return np.random.choice(['Subscriber','Registrant'], p=[0.2, 0.8])
-    
     
